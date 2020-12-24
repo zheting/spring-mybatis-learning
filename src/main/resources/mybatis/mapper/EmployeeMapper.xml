@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace 是接口全类名 -->
+<mapper namespace="cn.java.money.mapper.EmployeeMapper">
+
+    <select id="selectEmp" resultType="cn.java.money.entity.Employee">
+        select id, last_name as lastName, email, gender from tbl_employee  where id = #{id}
+    </select>
+
+    <!-- id 是方法名   -->
+    <select id="getEmployeeById" resultType="cn.java.money.entity.Employee">
+        select id, last_name as lastName, email, gender from tbl_employee  where id = #{id}
+    </select>
+
+</mapper>
