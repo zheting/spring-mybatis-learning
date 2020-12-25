@@ -6,12 +6,14 @@
 <!-- namespace 是接口全类名 -->
 <mapper namespace="cn.java.money.mapper.EmployeeMapper">
 
-    <select id="selectEmp" resultType="cn.java.money.entity.Employee">
-        select id, last_name as lastName, email, gender from tbl_employee  where id = #{id}
+    <!-- 因为settings中配置 mapUnderscoreToCamelCase=true (默认是false)， 因此last_name 能够映射到 lastName-->
+    <!-- 因为配置typeAliases,所以resultType可以写别名 Employee-->
+    <select id="selectEmp" resultType="emp" databaseId="mysql">
+        select * from tbl_employee  where id = #{id}
     </select>
 
     <!-- id 是方法名   -->
-    <select id="getEmployeeById" resultType="cn.java.money.entity.Employee">
+    <select id="getEmployeeById" resultType="emp">
         select id, last_name as lastName, email, gender from tbl_employee  where id = #{id}
     </select>
 

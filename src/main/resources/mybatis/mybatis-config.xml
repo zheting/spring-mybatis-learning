@@ -2,30 +2,122 @@
 <!DOCTYPE configuration
         PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-config.dtd">
-
+<!--
+ 源码中的DTD
+org\apache\ibatis\builder\xml\mybatis-3-config.dtd
+-->
 <configuration>
+
+    <!-- 标签是有顺序的：properties  settings typeAliases typeHandlers plugins environments databaseIdProvider mappers-->
+
+    <!--
+        MyBatis可以使用properties来引入外部properties配置文件的内容
+        url 引入网路路径或者磁盘路径下的资源
+        resource 引入类路径下的资源
+    -->
+    <properties resource="mybatis/dbconfig.properties" />
+
     <!-- 在mybatis.xml中开启log4j -->
     <settings>
         <setting name="logImpl" value="LOG4J"/>
+        <setting name="mapUnderscoreToCamelCase" value="true"/>
     </settings>
 
-    <!-- 配置数据源 -->
-    <environments default="development">
+    <!-- 注意： 别名不区分大小写 即emp 和 Emp 一样-->
+    <typeAliases>
+        <!--
+            type 指定要起别名的类型的全类名
+            alias 指定别名，默认别名是类名小写
+         -->
+       <!-- <typeAlias type="cn.java.money.entity.Employee" alias="Employee" />-->
+        <!--
+            package: 为某个包下的所有类批量起别名
+                name: 指定包名(为当前包以及所有子包的每一个类都起一个默认别名，就是类名小写)
+         -->
+        <package name="cn.java.money.entity"/>
+
+        <!--  批量起别名的情况下，使用@Alias("emp") 注解为摸个类型指定新的别名-->
+
+        <!-- Mybatis 默认定义一些别名 就是基本数据类型等 -->
+    </typeAliases>
+
+    <!--类型处理器： java类型 和 数据库类型之间的转化 -->
+    <typeHandlers>
+
+    </typeHandlers>
+
+    <!--<plugins>
+        <plugin interceptor=""></plugin>
+    </plugins>-->
+
+    <!-- 配置环境, 可以配置多个 -->
+    <environments default="development"> <!-- 通过default属性的值 来切换环境-->
+        <!--id 代表当前环境的标识 -->
         <environment id="development">
+            <!--事务管理器 type=JDBC/MANAGED
+                Configuration 中注册了
+                     typeAliasRegistry.registerAlias("JDBC", JdbcTransactionFactory.class);
+                     typeAliasRegistry.registerAlias("MANAGED", ManagedTransactionFactory.class);
+
+                自定义事务管理器
+                    实现接口TransactionFactory，type指定为类的全路径
+            -->
             <transactionManager type="JDBC"/>
+            <!-- 数据源 type=POOLED/UNPOOLED/JNDI
+                 Configuration 中注册了
+                    typeAliasRegistry.registerAlias("JNDI", JndiDataSourceFactory.class);
+                    typeAliasRegistry.registerAlias("POOLED", PooledDataSourceFactory.class);
+                    typeAliasRegistry.registerAlias("UNPOOLED", UnpooledDataSourceFactory.class);
+
+                 自定义数据源
+                    实现接口 DataSourceFactory
+            -->
             <dataSource type="POOLED">
                 <!-- MySQL 驱动版本6以后变为com.mysql.cj.jdbc.Driver 而不是 com.mysql.jdbc.Driver -->
-                <property name="driver" value="com.mysql.cj.jdbc.Driver"/>
-                <property name="url" value="jdbc:mysql://localhost:3306/mybatis?characterEncoding=UTF-8&amp;&amp;serverTimezone=GMT"/>
-                <property name="username" value="root"/>
-                <property name="password" value="123456"/>
+                <property name="driver" value="${jdbc.driver}"/>
+                <property name="url" value="${jdbc.url}"/> <!-- jdbc:mysql://localhost:3306/mybatis?characterEncoding=UTF-8&amp;&amp;serverTimezone=GMT -->
+                <property name="username" value="${jdbc.username}"/>
+                <property name="password" value="${jdbc.password}"/>
             </dataSource>
         </environment>
     </environments>
 
-    <!-- 配置mapper -->
+    <!-- 支持多数据库
+        type: DB_VENDOR
+        typeAliasRegistry.registerAlias("DB_VENDOR", VendorDatabaseIdProvider.class);
+        作用就是得到数据库厂商的标识（JDBC, Connection.getMetaData().getDatabaseProductName()），mybatis就能根据数据库厂商标识来执行不同的sql
+
+        支持多数据库，当然要在environments配置多个数据源， 通过 <environments default="development">的default属性选择使用的数据源
+         然后通过属性 databaseId的值决定调用那条sql(就是同一条sql 写了三个厂商的版本)
+            <select id="selectEmp" resultType="emp" databaseId="mysql">
+            <select id="selectEmp" resultType="emp" databaseId="oracle">
+            <select id="selectEmp" resultType="emp" databaseId="sqlServer">
+          注意：没有databaseId属性的sql一定会加载
+    -->
+    <databaseIdProvider type="DB_VENDOR">
+        <!--为不同的数据库厂商定义别名-->
+        <property name="MySQL" value="mysql"/>
+        <property name="Oracle" value="oracle"/>
+        <property name="SQL Server" value="sqlserver"/>
+    </databaseIdProvider>
+
+    <!-- 配置mapper
+        注册配置文件
+            resource 引用类路径下的sql映射文件
+            url 网络或磁盘路径
+        注册接口
+            class
+                1. 有sql映射文件，sql映射文件必须和接口同名，并且放在与接口同一目录下
+                2. 没有sql映射文件，所有的sql都利用注解（@select等）写在接口上，就可以直接配置接口的全类名
+                    注意：sql映射文件和注解可以同时混合使用
+    -->
     <mappers>
         <mapper resource="mybatis/mapper/EmployeeMapper.xml"/>
+        <!--批量注册
+            要求：sql映射文件必须和接口同名，并且放在与接口同一目录下
+                因为 resource文件下的文件 最终都在类路径下，因此只要在resource中定义同样的目录结构，就可以满足同名同目录的要求
+        -->
+        <package name="cn.java.money.mapper"/>
     </mappers>
 
 </configuration>

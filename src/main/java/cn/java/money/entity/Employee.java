@@ -1,5 +1,8 @@
 package cn.java.money.entity;
 
+import org.apache.ibatis.type.Alias;
+
+@Alias("emp")
 public class Employee {
 
     private Integer id;
