@@ -62,4 +62,68 @@
         delete from tbl_employee where id = #{id}
     </delete>
 
+    <select id="getEmployeeByIdAndLastName" resultType="emp">
+        <!-- select id, last_name as lastName, email, gender from tbl_employee  where id = #{arg0} and last_name = #{arg1}  -->
+        <!-- select id, last_name,  email, gender from tbl_employee  where id = #{param1} and last_name = #{param2} -->
+        <!-- @Param 命名参数-->
+        select id, last_name,  email, gender from tbl_employee  where id = #{id} and last_name = #{lastName}
+    </select>
+
+    <select id="getEmployeeByIdAndLastName2" resultType="emp">
+        select id, last_name,  email, gender from tbl_employee  where id = #{id} and last_name = #{lastName}
+    </select>
+
+    <select id="getEmployeeByIdAndLastName3" resultType="emp">
+        select id, last_name,  email, gender from tbl_employee  where id = #{id} and last_name = #{lastName}
+    </select>
+
+    <!--返回多个元素的时候，resultType的值是集合中元素的类型-->
+    <select id="getEmployeeByLastName" resultType="emp">
+        select id, last_name,  email, gender from tbl_employee  where last_name = #{lastName}
+    </select>
+
+    <!--返回值是单条记录 map
+        key(就是属性名称) : vlaue
+         gender=男,
+         last_name=tom,
+         id=2,
+         email=tom@qq.com
+    -->
+   <select id="getEmployeeByIdReturnMap" resultType="map">
+        select id, last_name,  email, gender from tbl_employee  where id = #{id}
+    </select>
+
+    <!--返回多条记录的map:  Map<Integer,Employee>
+        resultType是map value的类型
+        @MapKey("id") 标明那一列作为key
+    -->
+    <select id="getEmployeeByLastNameReturnMap" resultType="emp">
+        select id, last_name,  email, gender from tbl_employee  where last_name = #{lastName}
+    </select>
+
+    <!--
+        #{key} 预编译，防止sql注入
+        ${key} sql直接拼接，会有安全问题
+        大部分情况下使用#{}， 但是当原生JDBC不支持占位符的地方可以使用${}
+        比如：按年份分表，表名就是 年份_salary,此时年份就是动态的，但是表名不支持占位符，因此要使用${}
+             比如排序的字段和升序降序都不支持占位符 order by ${f_name} ${order}
+
+         #{}中更多的配置
+         javaType
+         jdbcType
+            通常需要在某种特定的条件下被设置
+            比如：在我们数据为null的时候，有些数据库可能不能识别mybatis对null的默认处理。
+                    例如oracle就会报错 JdbcType OTHER 无效的类型； 因为mybatis多所有的null都映射的是原生JDBC的OTHER类型，因此oracle不能正确处理
+                      #{email，jdbcType=NULL}  在源码java.sql.JDBCType中可以找OTHER(Types.OTHER),NULL(Types.NULL)
+             全局配置settings中有一个配置项 jdbcTypeForNull默认值是OTHER,因此可以在setting中设置jdbcTypeForNull=NULL
+         mode(存储过程)
+         numericScale
+         resultMap
+         typeHandler
+         jdbcTypeName
+         expression
+    -->
+
+
+
 </mapper>

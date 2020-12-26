@@ -10,6 +10,9 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class MyBatisTest {
 
@@ -81,6 +84,102 @@ public class MyBatisTest {
         //删除
         mapper.deleteEmployee(employee.getId());
 
+        sqlSession.close();
+    }
+
+    @Test
+    public void test4() throws IOException {
+        String resource = "mybatis/mybatis-config.xml";
+        InputStream inputStream = Resources.getResourceAsStream(resource);
+        SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+        //自动提交事务
+        SqlSession sqlSession = sqlSessionFactory.openSession(true);
+        // 将xml和接口绑定， 获取接口的实现对象
+        EmployeeMapper mapper = sqlSession.getMapper(EmployeeMapper.class);
+        // 查询
+        Employee employee2 = mapper.getEmployeeByIdAndLastName(5, "tom");
+        System.out.println(employee2);
+
+        sqlSession.close();
+    }
+
+    @Test
+    public void test5() throws IOException {
+        String resource = "mybatis/mybatis-config.xml";
+        InputStream inputStream = Resources.getResourceAsStream(resource);
+        SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+        //自动提交事务
+        SqlSession sqlSession = sqlSessionFactory.openSession(true);
+        // 将xml和接口绑定， 获取接口的实现对象
+        EmployeeMapper mapper = sqlSession.getMapper(EmployeeMapper.class);
+        // 查询
+        Employee employee = new Employee();
+        employee.setId(5);
+        employee.setLastName("tom");
+        Employee employee2 = mapper.getEmployeeByIdAndLastName2(employee);
+        System.out.println(employee2);
+
+        sqlSession.close();
+    }
+
+    @Test
+    public void test6() throws IOException {
+        String resource = "mybatis/mybatis-config.xml";
+        InputStream inputStream = Resources.getResourceAsStream(resource);
+        SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+        //自动提交事务
+        SqlSession sqlSession = sqlSessionFactory.openSession(true);
+        // 将xml和接口绑定， 获取接口的实现对象
+        EmployeeMapper mapper = sqlSession.getMapper(EmployeeMapper.class);
+        // 查询
+        Map map = new HashMap();
+        map.put("id", 5);
+        map.put("lastName", "tom");
+        Employee employee2 = mapper.getEmployeeByIdAndLastName3(map);
+        System.out.println(employee2);
+
+        sqlSession.close();
+    }
+
+    @Test
+    public void test7() throws IOException {
+        String resource = "mybatis/mybatis-config.xml";
+        InputStream inputStream = Resources.getResourceAsStream(resource);
+        SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+        //自动提交事务
+        SqlSession sqlSession = sqlSessionFactory.openSession(true);
+        // 将xml和接口绑定， 获取接口的实现对象
+        EmployeeMapper mapper = sqlSession.getMapper(EmployeeMapper.class);
+        List<Employee> employees = mapper.getEmployeeByLastName("tom");
+        System.out.println(employees);
+        sqlSession.close();
+    }
+
+    @Test
+    public void test8() throws IOException {
+        String resource = "mybatis/mybatis-config.xml";
+        InputStream inputStream = Resources.getResourceAsStream(resource);
+        SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+        //自动提交事务
+        SqlSession sqlSession = sqlSessionFactory.openSession(true);
+        // 将xml和接口绑定， 获取接口的实现对象
+        EmployeeMapper mapper = sqlSession.getMapper(EmployeeMapper.class);
+        Map<String, Object> employeeByIdReturnMap = mapper.getEmployeeByIdReturnMap(2);
+        System.out.println(employeeByIdReturnMap);
+        sqlSession.close();
+    }
+
+    @Test
+    public void test9() throws IOException {
+        String resource = "mybatis/mybatis-config.xml";
+        InputStream inputStream = Resources.getResourceAsStream(resource);
+        SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+        //自动提交事务
+        SqlSession sqlSession = sqlSessionFactory.openSession(true);
+        // 将xml和接口绑定， 获取接口的实现对象
+        EmployeeMapper mapper = sqlSession.getMapper(EmployeeMapper.class);
+        Map<Integer, Employee> employeeByIdReturnMap = mapper.getEmployeeByLastNameReturnMap("tom");
+        System.out.println(employeeByIdReturnMap);
         sqlSession.close();
     }
 
