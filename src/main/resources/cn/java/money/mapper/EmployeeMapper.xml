@@ -36,11 +36,19 @@
             keyProperty 查出的主键封装给Java bean 的那个属性
             order="BEFORE" 当前sql在插入sql之前运行
         -->
-        <selectKey keyProperty="id" order="BEFORE" resultType="integer">
+        <!--<selectKey keyProperty="id" order="BEFORE" resultType="integer">
             select EMPLOYEES_SEQ.nextval from dual
         </selectKey>
         insert into tbl_employee (id,last_name,email,gender)
         values (#{id},#{lastName},#{email},#{gender})
+        -->
+
+        <selectKey keyProperty="id" order="AFTER" resultType="integer">
+            select EMPLOYEES_SEQ.currval from dual
+        </selectKey>
+
+        insert into tbl_employee (id,last_name,email,gender)
+            values (EMPLOYEES_SEQ.nextval,#{lastName},#{email},#{gender})
     </insert>
 
 
