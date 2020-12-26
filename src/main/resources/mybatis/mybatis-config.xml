@@ -112,12 +112,12 @@ org\apache\ibatis\builder\xml\mybatis-3-config.dtd
                     注意：sql映射文件和注解可以同时混合使用
     -->
     <mappers>
-        <mapper resource="mybatis/mapper/EmployeeMapper.xml"/>
+        <mapper resource="cn/java/money/mapper/EmployeeMapper.xml"/>
         <!--批量注册
             要求：sql映射文件必须和接口同名，并且放在与接口同一目录下
                 因为 resource文件下的文件 最终都在类路径下，因此只要在resource中定义同样的目录结构，就可以满足同名同目录的要求
         -->
-        <package name="cn.java.money.mapper"/>
+        <!--<package name="cn.java.money.mapper"/>-->
     </mappers>
 
 </configuration>

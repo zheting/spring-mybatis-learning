@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace 是接口全类名 -->
+<mapper namespace="cn.java.money.mapper.EmployeeMapper">
+
+    <!-- 因为settings中配置 mapUnderscoreToCamelCase=true (默认是false)， 因此last_name 能够映射到 lastName-->
+    <!-- 因为配置typeAliases,所以resultType可以写别名 Employee-->
+    <!--  databaseId="mysql" 指定该条sql在那个数据库产品执行 -->
+    <select id="selectEmp" resultType="emp" databaseId="mysql">
+        select * from tbl_employee  where id = #{id}
+    </select>
+
+    <!-- id 是方法名   -->
+    <select id="getEmployeeById" resultType="emp">
+        select id, last_name as lastName, email, gender from tbl_employee  where id = #{id}
+    </select>
+
+    <!--
+        获取自增主键值：
+            useGeneratedKeys="true"使用自增主键获取主键值策略， JDBC Statement.getGeneratedKeys()
+            keyProperty="id" 指定对应的主键属性，也就是mybatis获取主键以后，将这个值封装给java bean的那个属性
+    -->
+    <insert id="addEmployee" useGeneratedKeys="true" keyProperty="id" databaseId="mysql">
+        insert into tbl_employee (last_name,email,gender)
+        values (#{lastName},#{email},#{gender})
+    </insert>
+
+    <!--
+        Oracle不支持自增，可以使用序列模拟自增
+    -->
+    <insert id="addEmployee" useGeneratedKeys="true" keyProperty="id" databaseId="oracle">
+        <!--
+            keyProperty 查出的主键封装给Java bean 的那个属性
+            order="BEFORE" 当前sql在插入sql之前运行
+        -->
+        <selectKey keyProperty="id" order="BEFORE" resultType="integer">
+            select EMPLOYEES_SEQ.nextval from dual
+        </selectKey>
+        insert into tbl_employee (id,last_name,email,gender)
+        values (#{id},#{lastName},#{email},#{gender})
+    </insert>
+
+
+    <update id="updateEmployee" >
+        update tbl_employee
+            set last_name = #{lastName}, email = #{email}, gender = #{gender}
+            where id = #{id}
+    </update>
+
+    <delete id="deleteEmployee">
+        delete from tbl_employee where id = #{id}
+    </delete>
+
+</mapper>

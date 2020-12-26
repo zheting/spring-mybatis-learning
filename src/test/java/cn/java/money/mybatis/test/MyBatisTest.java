@@ -48,7 +48,7 @@ public class MyBatisTest {
         configuration.addMapper(EmployeeMapper.class);
         SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(configuration);*/
 
-
+        // 不会自动提交事务
         SqlSession sqlSession = sqlSessionFactory.openSession();
         // 将xml和接口绑定， 获取接口的实现对象
         EmployeeMapper mapper = sqlSession.getMapper(EmployeeMapper.class);
@@ -58,5 +58,30 @@ public class MyBatisTest {
         sqlSession.close();
     }
 
+
+    @Test
+    public void test3() throws IOException {
+        String resource = "mybatis/mybatis-config.xml";
+        InputStream inputStream = Resources.getResourceAsStream(resource);
+        SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+
+        //自动提交事务
+        SqlSession sqlSession = sqlSessionFactory.openSession(true);
+        // 将xml和接口绑定， 获取接口的实现对象
+        EmployeeMapper mapper = sqlSession.getMapper(EmployeeMapper.class);
+        // 增加
+        Employee employee = new Employee(null, "tom", "tom@qq.com", "男");
+        mapper.addEmployee(employee);
+        // 修改
+        employee.setGender("女");
+        mapper.updateEmployee(employee);
+        // 查询
+        Employee employee2 = mapper.getEmployeeById(employee.getId());
+        System.out.println(employee2);
+        //删除
+        mapper.deleteEmployee(employee.getId());
+
+        sqlSession.close();
+    }
 
 }
