@@ -1,25 +1,12 @@
 package cn.java.money.entity;
 
-import org.apache.ibatis.type.Alias;
-
-@Alias("emp")
-public class Employee {
+public class Employee2 {
 
     private Integer id;
     private String lastName; //数据库中的字段名为 last_name, 因此没法映射，我们可以在查询的时候 as lastName
     private String email;
     private String gender;
     private Department department;
-
-    public Employee() {
-    }
-
-    public Employee(Integer id, String lastName, String email, String gender) {
-        this.id = id;
-        this.lastName = lastName;
-        this.email = email;
-        this.gender = gender;
-    }
 
     public Integer getId() {
         return id;
@@ -53,13 +40,22 @@ public class Employee {
         this.email = email;
     }
 
+    public Department getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(Department department) {
+        this.department = department;
+    }
+
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("Employee{");
+        final StringBuilder sb = new StringBuilder("Employee2{");
         sb.append("id=").append(id);
         sb.append(", lastName='").append(lastName).append('\'');
         sb.append(", email='").append(email).append('\'');
         sb.append(", gender='").append(gender).append('\'');
+        sb.append(", department=").append(department);
         sb.append('}');
         return sb.toString();
     }

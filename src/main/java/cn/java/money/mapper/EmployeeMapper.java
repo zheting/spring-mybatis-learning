@@ -1,6 +1,7 @@
 package cn.java.money.mapper;
 
 import cn.java.money.entity.Employee;
+import cn.java.money.entity.Employee2;
 import org.apache.ibatis.annotations.MapKey;
 import org.apache.ibatis.annotations.Param;
 
@@ -80,4 +81,17 @@ public interface EmployeeMapper {
      */
     @MapKey("id")
     Map<Integer,Employee> getEmployeeByLastNameReturnMap(String lastName);
+
+    /*
+     * 返回List， 用自定义的resultMap
+     */
+    List<Employee> getEmployeeByLastName2(String lastName);
+
+    Employee2  getEmpAndDept(Integer id);
+
+    Employee2  getEmpAndDept2(Integer id);
+
+    List<Employee> getEmpByDepId(Integer id);
+
+    Employee2  getEmpAndDept3(Integer id);
 }

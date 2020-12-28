@@ -21,6 +21,9 @@ org\apache\ibatis\builder\xml\mybatis-3-config.dtd
     <settings>
         <setting name="logImpl" value="LOG4J"/>
         <setting name="mapUnderscoreToCamelCase" value="true"/>
+        <!--懒加载的开启-->
+        <setting name="lazyLoadingEnabled" value="true"/>
+        <setting name="aggressiveLazyLoading" value="false"/>
     </settings>
 
     <!-- 注意： 别名不区分大小写 即emp 和 Emp 一样-->
@@ -113,6 +116,7 @@ org\apache\ibatis\builder\xml\mybatis-3-config.dtd
     -->
     <mappers>
         <mapper resource="cn/java/money/mapper/EmployeeMapper.xml"/>
+        <mapper resource="cn/java/money/mapper/DepartmentMapper.xml"/>
         <!--批量注册
             要求：sql映射文件必须和接口同名，并且放在与接口同一目录下
                 因为 resource文件下的文件 最终都在类路径下，因此只要在resource中定义同样的目录结构，就可以满足同名同目录的要求

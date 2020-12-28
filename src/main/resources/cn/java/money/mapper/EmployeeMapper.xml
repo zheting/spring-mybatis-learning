@@ -9,6 +9,7 @@
     <!-- 因为settings中配置 mapUnderscoreToCamelCase=true (默认是false)， 因此last_name 能够映射到 lastName-->
     <!-- 因为配置typeAliases,所以resultType可以写别名 Employee-->
     <!--  databaseId="mysql" 指定该条sql在那个数据库产品执行 -->
+    <!-- 该条sql 不是通过接口和mapper关联以后查询的，而是通过 java代码直接关联查询的-->
     <select id="selectEmp" resultType="emp" databaseId="mysql">
         select * from tbl_employee  where id = #{id}
     </select>
@@ -124,6 +125,105 @@
          expression
     -->
 
+    <!-- 自定义某个JavaBean的封装规则
+            type: 自定义规则的Java 类型
+            id: 规则的名称，便于被引用
+    -->
+    <resultMap id="MyEmp" type="cn.java.money.entity.Employee">
+            <!--id 标签定义主键，底层会有优化-->
+            <id column="id" property="id"/>
+            <!-- 定义普通列封装规则 -->
+            <result column="last_name" property="lastName"/>
+            <!-- 其他不指定的列会自动封装 -->
+    </resultMap>
+
+    <!--resultMap 和 resultType 不可以同时使用-->
+    <!-- resultMap 比 settings中配置的 mapUnderscoreToCamelCase 优先级高-->
+    <select id="getEmployeeByLastName2" resultMap="MyEmp">
+        select id, last_name,  email, gender from tbl_employee  where last_name = #{lastName}
+    </select>
+
+    <!-- 通过外键 级联属性 -->
+    <resultMap id="MyEmp2" type="cn.java.money.entity.Employee2">
+        <id column="id" property="id"/>
+        <result column="last_name" property="lastName"/>
+        <result column="dept_id" property="department.id"/>
+        <result column="dept_name" property="department.deptName"/>
+    </resultMap>
+
+    <!-- association标签定义级联属性 -->
+    <resultMap id="MyEmp3" type="cn.java.money.entity.Employee2">
+        <id column="id" property="id"/>
+        <result column="last_name" property="lastName"/>
+        <association property="department" javaType="cn.java.money.entity.Department">
+            <result column="dept_id" property="id"/>
+            <result column="dept_name" property="deptName"/>
+        </association>
+    </resultMap>
+
+    <select id="getEmpAndDept" resultMap="MyEmp3">
+        select e.id id, e.last_name, e.email email, e.gender gender, d.id dept_id, d.dept_name dept_Name
+        from tbl_employee e, tbl_dept d
+        where e.id = d.id and e.id = #{id}
+    </select>
+
+    <!--
+        使用association进行分步查询
+        1.0 根据员工id查询员工信息
+        2.0 根据员工信息中的部门id 查询部门信息
+        3.0 部门设置给员工
+
+    -->
+    <resultMap id="MyEmp4" type="cn.java.money.entity.Employee2">
+        <id column="id" property="id"/>
+        <result column="last_name" property="lastName"/>
+        <!--
+            select : 表示要调用哪个方法
+            colum: 给方法传参数，这里就是把employee中的dep_id传给getDepartmentById
+            property: 把select的查询结果赋值给Employee2的department属性
+        -->
+        <association property="department" select="cn.java.money.mapper.DepartmentMapper.getDepartmentById" column="dep_id"/>
+    </resultMap>
+    <select id="getEmpAndDept2" resultMap="MyEmp4">
+        select id, last_name, email, gender, dep_id from tbl_employee  where id = #{id}
+    </select>
+
+    <!-- 懒加载、延时加载、按需加载
+        分步查询的基础上加上如下配置settings就可以开启延时加载：
+            <setting name="lazyLoadingEnabled" value="true"/>
+            <setting name="aggressiveLazyLoading" value="false"/>
+    -->
 
 
+    <select id="getEmpByDepId" resultType="Employee2">
+        select id, last_name, email, gender, dep_id from tbl_employee  where dep_id = #{dep_id}
+    </select>
+
+    <!--
+
+       鉴别器：mybatis可以使用discriminator判断某列的值，然后根据某列的值改变封装行为。
+       模拟场景： 如果查询出的是女生，就把部门信息查询出来，否则不查询
+                如果是男生，把last_name这一列的值赋给email
+    -->
+    <resultMap id="MyEmp5" type="cn.java.money.entity.Employee2">
+        <id column="id" property="id"/>
+        <result column="last_name" property="lastName"/>
+        <!--
+            column： 指定判定的列名
+            javaType: 列值对应的类型
+        -->
+        <discriminator javaType="string" column="gender">
+            <case value="男" resultType="Employee2">
+                <id column="id" property="id"/>
+                <result column="last_name" property="email"/>
+            </case>
+            <case value="女" resultType="Employee2">
+                <association property="department" select="cn.java.money.mapper.DepartmentMapper.getDepartmentById" column="dep_id"/>
+            </case>
+        </discriminator>
+    </resultMap>
+
+    <select id="getEmpAndDept3" resultMap="MyEmp5">
+        select id, last_name, email, gender, dep_id from tbl_employee  where id = #{id}
+    </select>
 </mapper>

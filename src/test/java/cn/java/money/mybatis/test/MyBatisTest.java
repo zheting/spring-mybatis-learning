@@ -1,6 +1,9 @@
 package cn.java.money.mybatis.test;
 
+import cn.java.money.entity.Department2;
 import cn.java.money.entity.Employee;
+import cn.java.money.entity.Employee2;
+import cn.java.money.mapper.DepartmentMapper;
 import cn.java.money.mapper.EmployeeMapper;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
@@ -183,4 +186,108 @@ public class MyBatisTest {
         sqlSession.close();
     }
 
+    @Test
+    public void test10() throws IOException {
+        String resource = "mybatis/mybatis-config.xml";
+        InputStream inputStream = Resources.getResourceAsStream(resource);
+        SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+        //自动提交事务
+        SqlSession sqlSession = sqlSessionFactory.openSession(true);
+        // 将xml和接口绑定， 获取接口的实现对象
+        EmployeeMapper mapper = sqlSession.getMapper(EmployeeMapper.class);
+        List<Employee> list = mapper.getEmployeeByLastName2("tom");
+        System.out.println(list);
+        sqlSession.close();
+    }
+
+    @Test
+    public void test11() throws IOException {
+        String resource = "mybatis/mybatis-config.xml";
+        InputStream inputStream = Resources.getResourceAsStream(resource);
+        SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+        //自动提交事务
+        SqlSession sqlSession = sqlSessionFactory.openSession(true);
+        // 将xml和接口绑定， 获取接口的实现对象
+        EmployeeMapper mapper = sqlSession.getMapper(EmployeeMapper.class);
+        Employee2 empAndDept = mapper.getEmpAndDept(2);
+        System.out.println(empAndDept);
+        System.out.println(empAndDept.getDepartment().getDeptName());
+        sqlSession.close();
+    }
+
+    @Test
+    public void test12() throws IOException {
+        String resource = "mybatis/mybatis-config.xml";
+        InputStream inputStream = Resources.getResourceAsStream(resource);
+        SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+        //自动提交事务
+        SqlSession sqlSession = sqlSessionFactory.openSession(true);
+        // 将xml和接口绑定， 获取接口的实现对象
+        EmployeeMapper mapper = sqlSession.getMapper(EmployeeMapper.class);
+        Employee2 empAndDept = mapper.getEmpAndDept2(2);
+        System.out.println(empAndDept);
+        System.out.println(empAndDept.getDepartment().getDeptName());
+        sqlSession.close();
+    }
+
+    /*
+     * 延时加载测试
+     */
+    @Test
+    public void test13() throws IOException {
+        String resource = "mybatis/mybatis-config.xml";
+        InputStream inputStream = Resources.getResourceAsStream(resource);
+        SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+        //自动提交事务
+        SqlSession sqlSession = sqlSessionFactory.openSession(true);
+        // 将xml和接口绑定， 获取接口的实现对象
+        EmployeeMapper mapper = sqlSession.getMapper(EmployeeMapper.class);
+        Employee2 empAndDept = mapper.getEmpAndDept2(2);
+        //懒加载，如果只是获取employee相关的属性值就不会查询 select属性指定的sql
+        //<association property="department" select="cn.java.money.mapper.DepartmentMapper.getDepartmentById" column="dep_id"/>
+        System.out.println(empAndDept.getEmail());
+        sqlSession.close();
+    }
+
+    @Test
+    public void test14() throws IOException {
+        String resource = "mybatis/mybatis-config.xml";
+        InputStream inputStream = Resources.getResourceAsStream(resource);
+        SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+        //自动提交事务
+        SqlSession sqlSession = sqlSessionFactory.openSession(true);
+        // 将xml和接口绑定， 获取接口的实现对象
+        DepartmentMapper mapper = sqlSession.getMapper(DepartmentMapper.class);
+        Department2  department2 = mapper.getDepartmentByIdPluse(1);
+        System.out.println(department2);
+        sqlSession.close();
+    }
+
+    @Test
+    public void test15() throws IOException {
+        String resource = "mybatis/mybatis-config.xml";
+        InputStream inputStream = Resources.getResourceAsStream(resource);
+        SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+        //自动提交事务
+        SqlSession sqlSession = sqlSessionFactory.openSession(true);
+        // 将xml和接口绑定， 获取接口的实现对象
+        DepartmentMapper mapper = sqlSession.getMapper(DepartmentMapper.class);
+        Department2  department2 = mapper.getDepartmentByIdStep(1);
+        System.out.println(department2);
+        sqlSession.close();
+    }
+
+    @Test
+    public void test16() throws IOException {
+        String resource = "mybatis/mybatis-config.xml";
+        InputStream inputStream = Resources.getResourceAsStream(resource);
+        SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+        //自动提交事务
+        SqlSession sqlSession = sqlSessionFactory.openSession(true);
+        // 将xml和接口绑定， 获取接口的实现对象
+        EmployeeMapper mapper = sqlSession.getMapper(EmployeeMapper.class);
+        Employee2 empAndDept = mapper.getEmpAndDept3(5);
+        System.out.println(empAndDept);
+        sqlSession.close();
+    }
 }
