@@ -8,6 +8,16 @@ public class Employee2 {
     private String gender;
     private Department department;
 
+    public Employee2() {
+    }
+
+    public Employee2(String lastName, String email, String gender, Department department) {
+        this.lastName = lastName;
+        this.email = email;
+        this.gender = gender;
+        this.department = department;
+    }
+
     public Integer getId() {
         return id;
     }

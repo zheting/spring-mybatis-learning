@@ -94,4 +94,20 @@ public interface EmployeeMapper {
     List<Employee> getEmpByDepId(Integer id);
 
     Employee2  getEmpAndDept3(Integer id);
+
+    List<Employee2> getEmployeeByConditionIf(Employee2 employee2);
+
+    List<Employee2> getEmployeeByConditionTrim(Employee2 employee2);
+
+    List<Employee2> getEmployeeByConditionChoose(Employee2 employee2);
+
+    Integer updateEmployeeByCondation(Employee2 employee2);
+
+    /* arg0, collection, list 或者 @Param("ids")*/
+    List<Employee2> getEmpsByConditionForeach(@Param("ids")List<Integer> ids);
+
+    Integer saveAllEmps(List<Employee2> employee2s);
+
+    Integer saveAllEmps2(List<Employee2> employee2s);
+
 }

@@ -1,5 +1,6 @@
 package cn.java.money.mybatis.test;
 
+import cn.java.money.entity.Department;
 import cn.java.money.entity.Department2;
 import cn.java.money.entity.Employee;
 import cn.java.money.entity.Employee2;
@@ -13,9 +14,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class MyBatisTest {
 
@@ -288,6 +287,122 @@ public class MyBatisTest {
         EmployeeMapper mapper = sqlSession.getMapper(EmployeeMapper.class);
         Employee2 empAndDept = mapper.getEmpAndDept3(5);
         System.out.println(empAndDept);
+        sqlSession.close();
+    }
+
+    @Test
+    public void test17() throws IOException {
+        String resource = "mybatis/mybatis-config.xml";
+        InputStream inputStream = Resources.getResourceAsStream(resource);
+        SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+        //自动提交事务
+        SqlSession sqlSession = sqlSessionFactory.openSession(true);
+        // 将xml和接口绑定， 获取接口的实现对象
+        EmployeeMapper mapper = sqlSession.getMapper(EmployeeMapper.class);
+        Employee2 employee2 = new Employee2();
+        employee2.setGender("男");
+        List<Employee2> employeeByConditionIf = mapper.getEmployeeByConditionIf(employee2);
+        System.out.println(employeeByConditionIf);
+        sqlSession.close();
+    }
+
+    @Test
+    public void test18() throws IOException {
+        String resource = "mybatis/mybatis-config.xml";
+        InputStream inputStream = Resources.getResourceAsStream(resource);
+        SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+        //自动提交事务
+        SqlSession sqlSession = sqlSessionFactory.openSession(true);
+        // 将xml和接口绑定， 获取接口的实现对象
+        EmployeeMapper mapper = sqlSession.getMapper(EmployeeMapper.class);
+        Employee2 employee2 = new Employee2();
+        employee2.setGender("男");
+        List<Employee2> employeeByConditionIf = mapper.getEmployeeByConditionTrim(employee2);
+        System.out.println(employeeByConditionIf);
+        sqlSession.close();
+    }
+
+    @Test
+    public void test19() throws IOException {
+        String resource = "mybatis/mybatis-config.xml";
+        InputStream inputStream = Resources.getResourceAsStream(resource);
+        SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+        //自动提交事务
+        SqlSession sqlSession = sqlSessionFactory.openSession(true);
+        // 将xml和接口绑定， 获取接口的实现对象
+        EmployeeMapper mapper = sqlSession.getMapper(EmployeeMapper.class);
+        Employee2 employee2 = new Employee2();
+        employee2.setLastName("tom");
+        List<Employee2> employeeByConditionIf = mapper.getEmployeeByConditionChoose(employee2);
+        System.out.println(employeeByConditionIf);
+        sqlSession.close();
+    }
+
+
+    @Test
+    public void test20() throws IOException {
+        String resource = "mybatis/mybatis-config.xml";
+        InputStream inputStream = Resources.getResourceAsStream(resource);
+        SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+        //自动提交事务
+        SqlSession sqlSession = sqlSessionFactory.openSession(true);
+        // 将xml和接口绑定， 获取接口的实现对象
+        EmployeeMapper mapper = sqlSession.getMapper(EmployeeMapper.class);
+        Employee2 employee2 = new Employee2();
+        employee2.setLastName("tom2");
+        employee2.setId(2);
+        Integer integer =  mapper.updateEmployeeByCondation(employee2);
+        System.out.println(integer);
+        sqlSession.close();
+    }
+
+    @Test
+    public void test21() throws IOException {
+        String resource = "mybatis/mybatis-config.xml";
+        InputStream inputStream = Resources.getResourceAsStream(resource);
+        SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+        //自动提交事务
+        SqlSession sqlSession = sqlSessionFactory.openSession(true);
+        // 将xml和接口绑定， 获取接口的实现对象
+        EmployeeMapper mapper = sqlSession.getMapper(EmployeeMapper.class);
+        List<Employee2> empsByConditionForeach = mapper.getEmpsByConditionForeach(Arrays.asList(2, 3, 4));
+        System.out.println(empsByConditionForeach);
+        sqlSession.close();
+    }
+
+    @Test
+    public void test22() throws IOException {
+        String resource = "mybatis/mybatis-config.xml";
+        InputStream inputStream = Resources.getResourceAsStream(resource);
+        SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+        //自动提交事务
+        SqlSession sqlSession = sqlSessionFactory.openSession(true);
+        // 将xml和接口绑定， 获取接口的实现对象
+        EmployeeMapper mapper = sqlSession.getMapper(EmployeeMapper.class);
+        List<Employee2> list = new ArrayList<Employee2>();
+        list.add(new Employee2("jack","jack@qq.com", "男", new Department(1,"开发")));
+        list.add(new Employee2("jack1","jack1@qq.com", "男", new Department(1,"开发")));
+        list.add(new Employee2("jack2","jack2@qq.com", "男", new Department(1,"开发")));
+        Integer integer =  mapper.saveAllEmps(list);
+        System.out.println(integer);
+        sqlSession.close();
+    }
+
+    @Test
+    public void test23() throws IOException {
+        String resource = "mybatis/mybatis-config.xml";
+        InputStream inputStream = Resources.getResourceAsStream(resource);
+        SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+        //自动提交事务
+        SqlSession sqlSession = sqlSessionFactory.openSession(true);
+        // 将xml和接口绑定， 获取接口的实现对象
+        EmployeeMapper mapper = sqlSession.getMapper(EmployeeMapper.class);
+        List<Employee2> list = new ArrayList<Employee2>();
+        list.add(new Employee2("jack","jack@qq.com", "男", new Department(1,"开发")));
+        list.add(new Employee2("jack1","jack1@qq.com", "男", new Department(1,"开发")));
+        list.add(new Employee2("jack2","jack2@qq.com", "男", new Department(1,"开发")));
+        Integer integer =  mapper.saveAllEmps2(list);
+        System.out.println(integer);
         sqlSession.close();
     }
 }

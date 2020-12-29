@@ -11,12 +11,16 @@
     <!--  databaseId="mysql" 指定该条sql在那个数据库产品执行 -->
     <!-- 该条sql 不是通过接口和mapper关联以后查询的，而是通过 java代码直接关联查询的-->
     <select id="selectEmp" resultType="emp" databaseId="mysql">
-        select * from tbl_employee  where id = #{id}
+        select *
+        from tbl_employee
+        where id = #{id}
     </select>
 
     <!-- id 是方法名   -->
     <select id="getEmployeeById" resultType="emp">
-        select id, last_name as lastName, email, gender from tbl_employee  where id = #{id}
+        select id, last_name as lastName, email, gender
+        from tbl_employee
+        where id = #{id}
     </select>
 
     <!--
@@ -25,8 +29,8 @@
             keyProperty="id" 指定对应的主键属性，也就是mybatis获取主键以后，将这个值封装给java bean的那个属性
     -->
     <insert id="addEmployee" useGeneratedKeys="true" keyProperty="id" databaseId="mysql">
-        insert into tbl_employee (last_name,email,gender)
-        values (#{lastName},#{email},#{gender})
+        insert into tbl_employee (last_name, email, gender)
+        values (#{lastName}, #{email}, #{gender})
     </insert>
 
     <!--
@@ -49,38 +53,50 @@
         </selectKey>
 
         insert into tbl_employee (id,last_name,email,gender)
-            values (EMPLOYEES_SEQ.nextval,#{lastName},#{email},#{gender})
+        values (EMPLOYEES_SEQ.nextval,#{lastName},#{email},#{gender})
     </insert>
 
 
-    <update id="updateEmployee" >
+    <update id="updateEmployee">
         update tbl_employee
-            set last_name = #{lastName}, email = #{email}, gender = #{gender}
-            where id = #{id}
+        set last_name = #{lastName},
+            email     = #{email},
+            gender    = #{gender}
+        where id = #{id}
     </update>
 
     <delete id="deleteEmployee">
-        delete from tbl_employee where id = #{id}
+        delete
+        from tbl_employee
+        where id = #{id}
     </delete>
 
     <select id="getEmployeeByIdAndLastName" resultType="emp">
         <!-- select id, last_name as lastName, email, gender from tbl_employee  where id = #{arg0} and last_name = #{arg1}  -->
         <!-- select id, last_name,  email, gender from tbl_employee  where id = #{param1} and last_name = #{param2} -->
         <!-- @Param 命名参数-->
-        select id, last_name,  email, gender from tbl_employee  where id = #{id} and last_name = #{lastName}
+        select id, last_name, email, gender from tbl_employee where id = #{id} and last_name = #{lastName}
     </select>
 
     <select id="getEmployeeByIdAndLastName2" resultType="emp">
-        select id, last_name,  email, gender from tbl_employee  where id = #{id} and last_name = #{lastName}
+        select id, last_name, email, gender
+        from tbl_employee
+        where id = #{id}
+          and last_name = #{lastName}
     </select>
 
     <select id="getEmployeeByIdAndLastName3" resultType="emp">
-        select id, last_name,  email, gender from tbl_employee  where id = #{id} and last_name = #{lastName}
+        select id, last_name, email, gender
+        from tbl_employee
+        where id = #{id}
+          and last_name = #{lastName}
     </select>
 
     <!--返回多个元素的时候，resultType的值是集合中元素的类型-->
     <select id="getEmployeeByLastName" resultType="emp">
-        select id, last_name,  email, gender from tbl_employee  where last_name = #{lastName}
+        select id, last_name, email, gender
+        from tbl_employee
+        where last_name = #{lastName}
     </select>
 
     <!--返回值是单条记录 map
@@ -90,8 +106,10 @@
          id=2,
          email=tom@qq.com
     -->
-   <select id="getEmployeeByIdReturnMap" resultType="map">
-        select id, last_name,  email, gender from tbl_employee  where id = #{id}
+    <select id="getEmployeeByIdReturnMap" resultType="map">
+        select id, last_name, email, gender
+        from tbl_employee
+        where id = #{id}
     </select>
 
     <!--返回多条记录的map:  Map<Integer,Employee>
@@ -99,7 +117,9 @@
         @MapKey("id") 标明那一列作为key
     -->
     <select id="getEmployeeByLastNameReturnMap" resultType="emp">
-        select id, last_name,  email, gender from tbl_employee  where last_name = #{lastName}
+        select id, last_name, email, gender
+        from tbl_employee
+        where last_name = #{lastName}
     </select>
 
     <!--
@@ -130,17 +150,19 @@
             id: 规则的名称，便于被引用
     -->
     <resultMap id="MyEmp" type="cn.java.money.entity.Employee">
-            <!--id 标签定义主键，底层会有优化-->
-            <id column="id" property="id"/>
-            <!-- 定义普通列封装规则 -->
-            <result column="last_name" property="lastName"/>
-            <!-- 其他不指定的列会自动封装 -->
+        <!--id 标签定义主键，底层会有优化-->
+        <id column="id" property="id"/>
+        <!-- 定义普通列封装规则 -->
+        <result column="last_name" property="lastName"/>
+        <!-- 其他不指定的列会自动封装 -->
     </resultMap>
 
     <!--resultMap 和 resultType 不可以同时使用-->
     <!-- resultMap 比 settings中配置的 mapUnderscoreToCamelCase 优先级高-->
     <select id="getEmployeeByLastName2" resultMap="MyEmp">
-        select id, last_name,  email, gender from tbl_employee  where last_name = #{lastName}
+        select id, last_name, email, gender
+        from tbl_employee
+        where last_name = #{lastName}
     </select>
 
     <!-- 通过外键 级联属性 -->
@@ -163,8 +185,10 @@
 
     <select id="getEmpAndDept" resultMap="MyEmp3">
         select e.id id, e.last_name, e.email email, e.gender gender, d.id dept_id, d.dept_name dept_Name
-        from tbl_employee e, tbl_dept d
-        where e.id = d.id and e.id = #{id}
+        from tbl_employee e,
+             tbl_dept d
+        where e.id = d.id
+          and e.id = #{id}
     </select>
 
     <!--
@@ -182,10 +206,13 @@
             colum: 给方法传参数，这里就是把employee中的dep_id传给getDepartmentById
             property: 把select的查询结果赋值给Employee2的department属性
         -->
-        <association property="department" select="cn.java.money.mapper.DepartmentMapper.getDepartmentById" column="dep_id"/>
+        <association property="department" select="cn.java.money.mapper.DepartmentMapper.getDepartmentById"
+                     column="dep_id"/>
     </resultMap>
     <select id="getEmpAndDept2" resultMap="MyEmp4">
-        select id, last_name, email, gender, dep_id from tbl_employee  where id = #{id}
+        select id, last_name, email, gender, dep_id
+        from tbl_employee
+        where id = #{id}
     </select>
 
     <!-- 懒加载、延时加载、按需加载
@@ -196,7 +223,9 @@
 
 
     <select id="getEmpByDepId" resultType="Employee2">
-        select id, last_name, email, gender, dep_id from tbl_employee  where dep_id = #{dep_id}
+        select id, last_name, email, gender, dep_id
+        from tbl_employee
+        where dep_id = #{dep_id}
     </select>
 
     <!--
@@ -218,12 +247,160 @@
                 <result column="last_name" property="email"/>
             </case>
             <case value="女" resultType="Employee2">
-                <association property="department" select="cn.java.money.mapper.DepartmentMapper.getDepartmentById" column="dep_id"/>
+                <association property="department" select="cn.java.money.mapper.DepartmentMapper.getDepartmentById"
+                             column="dep_id"/>
             </case>
         </discriminator>
     </resultMap>
 
     <select id="getEmpAndDept3" resultMap="MyEmp5">
-        select id, last_name, email, gender, dep_id from tbl_employee  where id = #{id}
+        select id, last_name, email, gender, dep_id
+        from tbl_employee
+        where id = #{id}
     </select>
+
+    <!--======================================= 动态SQL =========================================================================================-->
+
+    <!-- 动态sql
+        if 中使用的OGNL
+        choose(when,otherwise)
+        trim(where,set)
+        foreach
+    -->
+    <select id="getEmployeeByConditionIf" resultType="Employee2">
+        select * from tbl_employee /*where 1=1*/
+        <where>/*只能去掉紧跟在where以后的第一个and 或 or*/
+            <if test="id!=null">
+                and id=#{id}
+            </if>
+            <if test="lastName!=null and lastName!=''">
+                and last_name = #{lastName}
+            </if>
+            <if test="email!=null and email.trim() != ''">
+                and email = #{email}
+            </if>
+            <if test="gender == '男'.toString() or gender == '女'.toString()">
+                and gender = #{gender}
+            </if>
+        </where>
+    </select>
+
+    <!--
+        trim 标签体中是整个字符串拼接的结果
+        prefix: 给拼接后的整个字符串加一个前缀
+        prefixOverrides: 去掉整个字符串前面多余的字符
+        suffix：给拼接后的整个字符串加一个后缀
+        suffixOverrides:去掉整个字符串后面多余的字符
+    -->
+    <select id="getEmployeeByConditionTrim" resultType="Employee2">
+        select * from tbl_employee
+        <trim prefix="where" suffixOverrides="and">
+            <if test="id!=null">
+                id=#{id} and
+            </if>
+            <if test="lastName!=null and lastName!=''">
+                last_name = #{lastName} and
+            </if>
+            <if test="email!=null and email.trim() != ''">
+                email = #{email} and
+            </if>
+            <if test="gender == '男'.toString() or gender == '女'.toString()">
+                gender = #{gender} and
+            </if>
+        </trim>
+    </select>
+
+    <select id="getEmployeeByConditionChoose" resultType="Employee2">
+        select * from tbl_employee
+        <where>
+            /*相当于switch case。只会进入其中一个分支，多个条件满足，只进入第一个满足条件的分支*/
+            <choose>
+                <when test="id!=null">
+                    id=#{id}
+                </when>
+                <when test="lastName!=null and lastName!=''">
+                    last_name = #{lastName}
+                </when>
+                <when test="email!=null and email.trim() != ''">
+                    email = #{email}
+                </when>
+                <otherwise>
+                    gender = '女'
+                </otherwise>
+            </choose>
+        </where>
+    </select>
+
+   <!--  set可以去掉逗号, 推荐set中不加逗号  也可以使用trim <trim prefix="set" suffixOverrides="," -->
+    <update id="updateEmployeeByCondation">
+        update tbl_employee
+        <set>
+            <if test="lastName!=null and lastName!=''">
+                 last_name = #{lastName},
+            </if>
+            <if test="email!=null and email.trim() != ''">
+                 email = #{email}
+            </if>
+            <if test="gender == '男'.toString() or gender == '女'.toString()">
+                 gender = #{gender}
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <select id="getEmpsByConditionForeach" resultType="Employee2">
+        select * from tbl_employee where id in /*(2,3,4)*/
+        <!--
+            collection指定要遍历的集合
+                list类型的参数会特殊处理封装在map中，map的key就是list
+            item 将当前遍历出的元素赋值给指定的变量
+            open 遍历出所有结果拼接一个开始的字符
+            close 遍历出所有结果拼接一个结束的字符
+            index: 索引， 遍历list的时候index表示的就是索引，item就是当前值
+                         遍历map的时候index表示的就是map的key， item就是map的值
+            #{变量名}
+        -->
+        <foreach collection="ids" item="item_id" separator="," open="(" close=")">
+                #{item_id}
+        </foreach>
+    </select>
+
+    <!-- insert into tbl_employee (last_name,email,gender, dep_id) values ('jack','jack@qq.com','男',1),('rockall','rockall@qq.com','男',1),('grace','grace@qq.com','男',1); -->
+    <insert id="saveAllEmps">
+        insert into tbl_employee (last_name,email,gender, dep_id) values
+        <foreach collection="list" item="emp" separator=",">
+            (#{emp.lastName},#{emp.email},#{emp.gender},#{emp.department.id})
+        </foreach>
+    </insert>
+
+    <!--
+        insert into tbl_employee (last_name,email,gender, dep_id) values ('jack','jack@qq.com','男',1);
+        insert into tbl_employee (last_name,email,gender, dep_id) values ('rockall','rockall@qq.com','男',1);
+    -->
+    <!-- 注意要设置mysql allowMultiQueries=true -->
+    <!--这种多条sql的执行，也可以应用于批量删除，批量修改，批量增加-->
+    <insert id="saveAllEmps2">
+        <foreach collection="list" item="emp" separator=";">
+            insert into tbl_employee (last_name,email,gender, dep_id) values  (#{emp.lastName},#{emp.email},#{emp.gender},#{emp.department.id})
+        </foreach>
+    </insert>
+
+    <!--oracle不支持 values(),(),()
+     oracle 批量保存：
+     方式一：多个insert放在 begin end之间
+        begin
+         insert into tbl_employee (last_name,email,gender, dep_id) values ('jack','jack@qq.com','男',1);
+         insert into tbl_employee (last_name,email,gender, dep_id) values ('rockall','rockall@qq.com','男',1);
+        end;
+     方式二：利用中间表
+        insert into tbl_employee(id,last_name,email,gender, dep_id)
+            select employee.nextval. lastName, email, gender, dep_id from(
+                select 'jack','java@qq.com','女', 1 from dual
+                union
+                select 'jack1','java1@qq.com','女', 1 from dual
+                ....
+               )
+       方式三：
+    -->
+
 </mapper>
